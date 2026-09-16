@@ -1,30 +1,325 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2299.5">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Primary Meta Tags -->
+  <meta name="title" content="ScarCrash - Synthetic Multi-Vehicle Collision Dataset (CARLA)">
+  <meta name="description" content="ScarCrash is a synthetic dataset of multi-vehicle traffic collisions built in CARLA, with synchronized 6-camera + LiDAR sensor data and full calibration, in a DeepAccident-compatible format.">
+  <meta name="keywords" content="autonomous driving, CARLA simulator, traffic collision dataset, LiDAR, multi-camera, sensor fusion, DeepAccident, scenario_runner, self-driving">
+  <!-- TODO: replace with your name -->
+  <meta name="author" content="Your Name">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="English">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ScarCrash">
+  <meta property="og:title" content="ScarCrash - Synthetic Multi-Vehicle Collision Dataset (CARLA)">
+  <meta property="og:description" content="ScarCrash is a synthetic dataset of multi-vehicle traffic collisions built in CARLA, with synchronized 6-camera + LiDAR sensor data and full calibration, in a DeepAccident-compatible format.">
+  <meta property="og:url" content="https://scarcrash.github.io/">
+  <!-- TODO: add a 1200x630px preview image at static/images/social_preview.png and uncomment -->
+  <!-- <meta property="og:image" content="https://scarcrash.github.io/static/images/social_preview.png"> -->
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ScarCrash - Synthetic Multi-Vehicle Collision Dataset (CARLA)">
+  <meta name="twitter:description" content="Synthetic multi-vehicle collision scenarios in CARLA with synchronized camera + LiDAR sensor data.">
+
+  <meta name="theme-color" content="#2563eb">
+
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://ajax.googleapis.com">
+
+  <title>ScarCrash - Synthetic Multi-Vehicle Collision Dataset</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+  <link rel="preload" href="static/css/bulma-carousel.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="static/css/bulma-slider.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" href="static/css/fontawesome.all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+    <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  </noscript>
+
+  <!-- Scripts -->
+  <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script defer src="static/js/bulma-carousel.min.js"></script>
+  <script defer src="static/js/bulma-slider.min.js"></script>
+  <script defer src="static/js/index.js"></script>
+
+  <!-- Structured Data: schema.org Dataset (helps Google Dataset Search) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "name": "ScarCrash",
+    "description": "A synthetic dataset of multi-vehicle traffic collisions generated in the CARLA simulator, providing synchronized 6-camera surround-view + top LiDAR sensor data with full calibration, from any chosen vehicle in the scene.",
+    "url": "https://scarcrash.github.io/",
+    "license": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "creator": {
+      "@type": "Person",
+      "name": "Your Name"
+    },
+    "keywords": ["autonomous driving", "CARLA", "traffic collision", "LiDAR", "multi-camera", "sensor fusion"],
+    "distribution": [
+      {
+        "@type": "DataDownload",
+        "encodingFormat": "ZIP",
+        "contentUrl": "https://github.com/siribooncha/CARLA_Collision_Scenarios_Simulation/releases/tag/release-assets"
+      }
+    ],
+    "codeRepository": "https://github.com/siribooncha/CARLA_Collision_Scenarios_Simulation"
+  }
+  </script>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;SCAR CRASH&lt;/title&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;h1&gt;Welcome to my website&lt;/h1&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;h2&gt;Data and code will be added soon.&lt;/h2&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+
+  <!-- Scroll to Top Button -->
+  <button class="scroll-to-top" onclick="scrollToTop()" title="Scroll to top" aria-label="Scroll to top">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <main id="main-content">
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">ScarCrash</h1>
+            <div class="is-size-5 publication-authors">
+              <!-- TODO: replace with your name and a link to your site/GitHub profile -->
+              <span class="author-block">
+                <a href="https://github.com/siribooncha" target="_blank">Your Name</a>
+              </span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">Synthetic multi-vehicle collision scenarios with multi-modal sensor data, built in CARLA</span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <span class="link-block">
+                  <a href="https://github.com/siribooncha/CARLA_Collision_Scenarios_Simulation" target="_blank"
+                  class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                </a>
+              </span>
+
+              <span class="link-block">
+                <a href="https://github.com/siribooncha/CARLA_Collision_Scenarios_Simulation/releases/tag/release-assets" target="_blank"
+                class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                  <i class="fas fa-database"></i>
+                </span>
+                <span>Dataset</span>
+              </a>
+            </span>
+
+            <span class="link-block">
+              <a href="https://github.com/siribooncha/CARLA_Collision_Scenarios_Simulation#readme" target="_blank"
+              class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                <i class="fas fa-book"></i>
+              </span>
+              <span>Documentation</span>
+            </a>
+          </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Teaser -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <div class="placeholder-box">
+        <span class="icon"><i class="fas fa-video"></i></span>
+        <p>Demo video coming soon</p>
+      </div>
+      <h2 class="subtitle has-text-centered" style="margin-top: 1.5rem;">
+        A red sedan and a green hatchback collide near a 4-way unsignalised intersection in Town04 -- one of the two scenarios in ScarCrash.
+      </h2>
+    </div>
+  </div>
+</section>
+<!-- End teaser -->
+
+<!-- Overview -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Overview</h2>
+        <div class="content has-text-justified">
+          <p>
+            ScarCrash is a synthetic dataset of multi-vehicle traffic collisions generated in the
+            <a href="https://carla.org/" target="_blank">CARLA</a> simulator using
+            <a href="https://github.com/carla-simulator/scenario_runner" target="_blank">scenario_runner</a>.
+            It provides two hand-built collision scenarios, each populated with several deliberately
+            colliding vehicles and roughly 30 background traffic vehicles driving normally nearby.
+          </p>
+          <p>
+            For every recording, sensor data is captured from a single chosen vehicle at a time:
+            six synchronized surround-view RGB cameras, one top-mounted LiDAR, and a combined
+            per-frame calibration file, in a layout compatible with the
+            <a href="https://github.com/deepaccident/DeepAccident" target="_blank">DeepAccident</a>
+            dataset format. Because any vehicle in the scene -- the observing ego vehicle, either
+            colliding vehicle, or any background vehicle -- can be selected as the recording target,
+            the same collision can be captured from many different vantage points across separate runs.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End overview -->
+
+<!-- Scenarios -->
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Scenarios</h2>
+      <div class="columns is-centered">
+        <div class="column is-half">
+          <div class="scenario-card">
+            <span class="map-tag">Town03</span>
+            <h3 class="title is-5">5-Way Signalised Intersection Collision</h3>
+            <p>Two vehicles collide at a five-way signalised intersection, surrounded by ~30
+              background vehicles driving normally nearby.</p>
+            <ul>
+              <li>2 deliberately colliding vehicles</li>
+              <li>~30 background traffic vehicles</li>
+              <li>Ends automatically 2 seconds after the collision is detected</li>
+            </ul>
+          </div>
+        </div>
+        <div class="column is-half">
+          <div class="scenario-card">
+            <span class="map-tag">Town04</span>
+            <h3 class="title is-5">4-Way Unsignalised Intersection Collision</h3>
+            <p>Three vehicles -- a red sedan, a green hatchback, and a truck -- converge and
+              collide near a four-way unsignalised intersection, surrounded by ~30 background vehicles.</p>
+            <ul>
+              <li>3 deliberately colliding vehicles</li>
+              <li>~30 background traffic vehicles</li>
+              <li>Ends automatically 2 seconds after the collision is detected</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <p class="has-text-centered" style="margin-top: 1.5rem;">
+        Every vehicle in the scene can be picked as the recording target at launch time, no code
+        changes required -- see the
+        <a href="https://github.com/siribooncha/CARLA_Collision_Scenarios_Simulation#choosing-what-to-record" target="_blank">Documentation</a>
+        for details.
+      </p>
+    </div>
+  </div>
+</section>
+<!-- End scenarios -->
+
+<!-- Sample data gallery -->
+<section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Sample Data</h2>
+      <div class="placeholder-box">
+        <span class="icon"><i class="fas fa-images"></i></span>
+        <p>Sample camera and LiDAR frames will be added here</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End sample data gallery -->
+
+<!-- Data format -->
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Data Format</h2>
+          <div class="content has-text-justified">
+            <p>Each recording produces, for the one chosen vehicle:</p>
+            <ul>
+              <li><strong>6&times; RGB cameras</strong> (front, front-left, front-right, back, back-left, back-right), 1600&times;900, synchronized frame-by-frame</li>
+              <li><strong>1&times; top-mounted LiDAR</strong>, configurable point density and range</li>
+              <li><strong>Combined per-frame calibration</strong> (<code>.pkl</code>): the vehicle's world pose, all 6 camera intrinsics, all 6 LiDAR-to-camera extrinsics, and the LiDAR-to-vehicle mount transform -- matching the DeepAccident calibration layout</li>
+            </ul>
+            <p>
+              Full field-by-field documentation, including the exact folder layout and array shapes,
+              is in the <a href="https://github.com/siribooncha/CARLA_Collision_Scenarios_Simulation#output-format" target="_blank">repository README</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End data format -->
+
+<!-- How to cite -->
+<section class="section" id="citation">
+  <div class="container is-max-desktop content">
+    <div class="bibtex-header">
+      <h2 class="title">How to Cite</h2>
+      <button class="copy-bibtex-btn" onclick="copyBibTeX()">
+        <i class="fas fa-copy"></i>
+        <span class="copy-text">Copy</span>
+      </button>
+    </div>
+    <!-- TODO: update the author name and year -->
+    <pre id="bibtex-code"><code>@misc{scarcrash2026,
+  title={ScarCrash: Synthetic Multi-Vehicle Collision Scenarios with Multi-Modal Sensor Data in CARLA},
+  author={Your Name},
+  year={2026},
+  howpublished={\url{https://github.com/siribooncha/CARLA_Collision_Scenarios_Simulation}}
+}</code></pre>
+  </div>
+</section>
+<!--End how to cite -->
+
+  </main>
+
+  <footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            <a href="https://github.com/siribooncha/CARLA_Collision_Scenarios_Simulation" target="_blank">Code</a>
+            &middot;
+            <a href="https://github.com/siribooncha/CARLA_Collision_Scenarios_Simulation/releases/tag/release-assets" target="_blank">Dataset</a>
+            &middot;
+            <a href="https://github.com/siribooncha/CARLA_Collision_Scenarios_Simulation#readme" target="_blank">Documentation</a>
+          </p>
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+            You are free to borrow the source code of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
 </body>
 </html>
