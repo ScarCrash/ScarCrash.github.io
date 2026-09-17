@@ -161,9 +161,14 @@
     }
   }
 
+  // 2-column grid fills left-to-right, top-to-bottom, so this order renders as:
+  //   Front       | Back
+  //   Front Left  | Back Left
+  //   Front Right | Back Right
   const CAMERA_ORDER = [
-    ["Camera_FrontLeft", "Front Left"], ["Camera_Front", "Front"], ["Camera_FrontRight", "Front Right"],
-    ["Camera_BackLeft", "Back Left"], ["Camera_Back", "Back"], ["Camera_BackRight", "Back Right"],
+    ["Camera_Front", "Front"], ["Camera_Back", "Back"],
+    ["Camera_FrontLeft", "Front Left"], ["Camera_BackLeft", "Back Left"],
+    ["Camera_FrontRight", "Front Right"], ["Camera_BackRight", "Back Right"],
   ];
 
   function ensureCameraGrid() {
