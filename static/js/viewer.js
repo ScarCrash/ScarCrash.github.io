@@ -28,6 +28,9 @@
   let selectedVehicle = null; // vehicle object or null
   let activeTab = "cameras";  // "cameras" | "lidar"
 
+  let cameraImgEls = null;    // camName -> persistent <img>, built once
+  let cameraRequestSeq = 0;   // guards against a slow preload overwriting a newer frame
+
   let svg, svgGroup;
   const dotEls = {};   // vehicle.id -> <circle>
   const pathEls = {};  // vehicle.id -> <polyline>
@@ -163,22 +166,51 @@
     ["Camera_BackLeft", "Back Left"], ["Camera_Back", "Back"], ["Camera_BackRight", "Back Right"],
   ];
 
-  function renderCameraTab(v, idx) {
+  function ensureCameraGrid() {
+    if (cameraImgEls) return cameraImgEls;
     const grid = document.getElementById("camera-grid");
     grid.innerHTML = "";
-    const frameStr = String(idx).padStart(6, "0");
+    cameraImgEls = {};
     for (const [camName, label] of CAMERA_ORDER) {
       const fig = document.createElement("figure");
       const img = document.createElement("img");
-      img.src = `${window.SCENARIO.mediaBase}/${v.id}/${camName}/${frameStr}.jpg`;
-      img.alt = `${v.id} ${label}`;
-      img.loading = "lazy";
+      img.alt = label;
       const cap = document.createElement("figcaption");
       cap.textContent = label;
       fig.appendChild(img);
       fig.appendChild(cap);
       grid.appendChild(fig);
+      cameraImgEls[camName] = img;
     }
+    return cameraImgEls;
+  }
+
+  function renderCameraTab(v, idx) {
+    const imgEls = ensureCameraGrid();
+    const frameStr = String(idx).padStart(6, "0");
+
+    // Preload all 6 frames off-DOM first, then swap every <img> src at once.
+    // Reusing the same persistent <img> elements (instead of clearing and
+    // rebuilding the grid) means the browser keeps showing each camera's
+    // previous frame right up until its replacement is ready -- no blank/
+    // white flash, and no images popping in one-by-one out of sync.
+    const requestId = ++cameraRequestSeq;
+    const preloads = CAMERA_ORDER.map(([camName]) => {
+      const url = `${window.SCENARIO.mediaBase}/${v.id}/${camName}/${frameStr}.jpg`;
+      return new Promise((resolve) => {
+        const preloadImg = new Image();
+        preloadImg.onload = () => resolve(url);
+        preloadImg.onerror = () => resolve(url);
+        preloadImg.src = url;
+      });
+    });
+
+    Promise.all(preloads).then((urls) => {
+      if (requestId !== cameraRequestSeq) return; // a newer frame was requested meanwhile
+      CAMERA_ORDER.forEach(([camName], i) => {
+        imgEls[camName].src = urls[i];
+      });
+    });
   }
 
   function ensureThree() {
