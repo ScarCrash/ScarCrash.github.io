@@ -4,8 +4,8 @@ Source for the [ScarCrash](https://scarcrash.github.io/) landing page: a synthet
 collision dataset built in CARLA. Plain HTML/CSS, no build step — deployed via GitHub Pages
 straight from this repo.
 
-- **Code**: https://github.com/siribooncha/CARLA_Collision_Scenarios_Simulation
-- **Dataset**: https://github.com/siribooncha/CARLA_Collision_Scenarios_Simulation/releases/tag/release-assets
+- **Code**: https://github.com/ScarCrash/CARLA_Collision_Scenarios_Simulation
+- **Dataset**: https://github.com/ScarCrash/CARLA_Collision_Scenarios_Simulation/releases/tag/release-assets
 
 ## Editing
 
