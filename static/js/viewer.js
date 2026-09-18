@@ -72,13 +72,43 @@
     return { minX, maxX, minY, maxY };
   }
 
+  // Average of every vehicle's frame-0 position, in the SAME final
+  // coordinates they actually render at (after mapAdjust.vehicles'
+  // translate/scale) -- used as the zoom center below, so "zoom in" focuses
+  // on where the vehicles/action actually are, not the raw lane bounds.
+  function vehicleClusterCenter(vehicleList, vehAdjust) {
+    const tx = vehAdjust.translateX || 0;
+    const ty = vehAdjust.translateY || 0;
+    const vScale = vehAdjust.scale != null ? vehAdjust.scale : 1;
+    let sumX = 0, sumY = 0;
+    for (const v of vehicleList) {
+      const [x, y] = v.positions[0].map;
+      sumX += x * vScale + tx;
+      sumY += y * vScale + ty;
+    }
+    return { cx: sumX / vehicleList.length, cy: sumY / vehicleList.length };
+  }
+
   function buildMapSvg(lanes, bounds) {
     const wrap = document.getElementById("map-svg-wrap");
     const pad = Math.max((bounds.maxX - bounds.minX), (bounds.maxY - bounds.minY)) * 0.04;
-    const vbX = bounds.minX - pad;
-    const vbY = bounds.minY - pad;
-    const vbW = (bounds.maxX - bounds.minX) + 2 * pad;
-    const vbH = (bounds.maxY - bounds.minY) + 2 * pad;
+    let vbX = bounds.minX - pad;
+    let vbY = bounds.minY - pad;
+    let vbW = (bounds.maxX - bounds.minX) + 2 * pad;
+    let vbH = (bounds.maxY - bounds.minY) + 2 * pad;
+
+    // Zoom shrinks the viewBox (not the map/vehicle transforms) around the
+    // vehicle cluster's own center, so everything on screen gets bigger
+    // without needing to re-touch the alignment calibration at all.
+    const adjust = (window.SCENARIO && window.SCENARIO.mapAdjust) || {};
+    const zoom = adjust.zoom || 1;
+    if (zoom > 1) {
+      const center = vehicleClusterCenter(vehicles, adjust.vehicles || {});
+      vbW = vbW / zoom;
+      vbH = vbH / zoom;
+      vbX = center.cx - vbW / 2;
+      vbY = center.cy - vbH / 2;
+    }
 
     const NS = "http://www.w3.org/2000/svg";
     svg = document.createElementNS(NS, "svg");
