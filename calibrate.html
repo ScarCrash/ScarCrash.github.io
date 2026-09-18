@@ -15,12 +15,15 @@
   .dot.witness { fill: #facc15; }
   #panel { width: 340px; padding: 16px; background: #fff; box-shadow: -2px 0 8px rgba(0,0,0,0.08); overflow-y: auto; box-sizing: border-box; }
   #panel h2 { font-size: 16px; margin: 0 0 12px; }
-  #panel label { display: block; font-size: 13px; font-weight: 600; margin: 14px 0 4px; color: #333; }
+  #panel h3 { font-size: 13px; margin: 18px 0 2px; padding-top: 10px; border-top: 1px solid #e5e5e5; color: #111; }
+  #panel label { display: block; font-size: 13px; font-weight: 600; margin: 12px 0 4px; color: #333; }
   #panel select { width: 100%; padding: 6px; font-size: 14px; }
   .row { display: flex; align-items: center; gap: 8px; }
   .row input[type="range"] { flex: 1; }
   .row input[type="number"] { width: 70px; padding: 4px; font-size: 13px; }
-  #config-json { width: 100%; height: 110px; margin-top: 10px; font-family: monospace; font-size: 12px; box-sizing: border-box; }
+  .checkbox-row { display: flex; align-items: center; gap: 6px; margin: 10px 0; font-size: 13px; }
+  .checkbox-row input { width: auto; }
+  #config-json { width: 100%; height: 140px; margin-top: 10px; font-family: monospace; font-size: 12px; box-sizing: border-box; }
   button { margin-top: 8px; padding: 6px 12px; font-size: 13px; cursor: pointer; }
   .hint { font-size: 12px; color: #666; margin-top: 6px; line-height: 1.4; }
 </style>
@@ -41,6 +44,25 @@
     <option value="stationary-hazard">Stationary hazard (Town04)</option>
   </select>
 
+  <h3>Map (lanes)</h3>
+
+  <label>Map scale (<span id="map-scale-val">1.00</span>)</label>
+  <div class="row">
+    <input type="range" id="map-scale-range" min="0.3" max="3" step="0.01" value="1">
+    <input type="number" id="map-scale-num" step="0.01" value="1">
+  </div>
+
+  <div class="checkbox-row">
+    <input type="checkbox" id="flip-h">
+    <label for="flip-h" style="margin:0;">Flip horizontal</label>
+  </div>
+  <div class="checkbox-row">
+    <input type="checkbox" id="flip-v" checked>
+    <label for="flip-v" style="margin:0;">Flip vertical (default on -- north-up)</label>
+  </div>
+
+  <h3>Vehicle dots</h3>
+
   <label>Translate X (<span id="tx-val">0</span>)</label>
   <div class="row">
     <input type="range" id="tx-range" min="-300" max="300" step="0.5" value="0">
@@ -59,16 +81,15 @@
     <input type="number" id="scale-num" step="0.01" value="1">
   </div>
 
-  <button id="reset-btn">Reset to 0 / 0 / 1</button>
+  <button id="reset-btn">Reset everything</button>
 
   <label>Current config (also logged to console on every change)</label>
   <textarea id="config-json" readonly></textarea>
 
   <p class="hint">
-    Only the vehicle dots move -- the map/lanes stay fixed as the reference.
-    Drag the sliders (or type exact numbers) until the dots line up with the
-    correct roads, then copy the JSON below (or open the browser console)
-    and send it back per scenario.
+    Map scale/flip and vehicle-dot translate/scale are independent -- adjust
+    either side until the dots line up with the correct roads, then copy the
+    JSON below (or open the browser console) and send it back per scenario.
   </p>
 </div>
 
@@ -85,8 +106,10 @@
   };
 
   const NS = "http://www.w3.org/2000/svg";
+  let mapGroup = null;
   let adjustGroup = null;
   let currentScenario = null;
+  let mapCenter = { cx: 0, cy: 0 };
 
   function boundsFromLanes(lanes) {
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
@@ -106,6 +129,7 @@
     wrap.innerHTML = "";
 
     const bounds = boundsFromLanes(lanes);
+    mapCenter = { cx: (bounds.minX + bounds.maxX) / 2, cy: (bounds.minY + bounds.maxY) / 2 };
     const pad = Math.max(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY) * 0.05;
     const vbX = bounds.minX - pad, vbY = bounds.minY - pad;
     const vbW = (bounds.maxX - bounds.minX) + 2 * pad;
@@ -114,22 +138,19 @@
     const svg = document.createElementNS(NS, "svg");
     svg.setAttribute("viewBox", `${vbX} ${vbY} ${vbW} ${vbH}`);
 
-    // Flip Y so the map reads north-up, same convention as the real viewer.
-    const flipGroup = document.createElementNS(NS, "g");
-    flipGroup.setAttribute("transform", `translate(0, ${bounds.minY + bounds.maxY}) scale(1,-1)`);
-    svg.appendChild(flipGroup);
-
+    // Map (lanes) and vehicle dots are SEPARATE sibling groups, each with
+    // their own independent transform -- scaling/flipping the map does not
+    // move the dots, and translating/scaling the dots does not move the map.
+    mapGroup = document.createElementNS(NS, "g");
     for (const lane of lanes) {
       const poly = document.createElementNS(NS, "polyline");
       poly.setAttribute("points", lane.shape.map((p) => p.join(",")).join(" "));
       poly.setAttribute("class", "lane");
-      flipGroup.appendChild(poly);
+      mapGroup.appendChild(poly);
     }
+    svg.appendChild(mapGroup);
 
-    // Vehicle dots live in their OWN group so translate/scale only affects them.
     adjustGroup = document.createElementNS(NS, "g");
-    flipGroup.appendChild(adjustGroup);
-
     for (const v of vehicles) {
       const [x, y] = v.positions[0].map;
       const dot = document.createElementNS(NS, "circle");
@@ -142,23 +163,40 @@
       dot.appendChild(title);
       adjustGroup.appendChild(dot);
     }
+    svg.appendChild(adjustGroup);
 
     wrap.appendChild(svg);
     applyTransform();
   }
 
   function applyTransform() {
-    if (!adjustGroup) return;
+    if (!mapGroup || !adjustGroup) return;
+
+    const mapScale = parseFloat(document.getElementById("map-scale-num").value) || 1;
+    const flipH = document.getElementById("flip-h").checked;
+    const flipV = document.getElementById("flip-v").checked;
+    const sx = (flipH ? -1 : 1) * mapScale;
+    const sy = (flipV ? -1 : 1) * mapScale;
+    // Scale/flip around the map's own center (not the SVG origin) so it
+    // stays roughly in view instead of jumping off-screen.
+    mapGroup.setAttribute("transform",
+      `translate(${mapCenter.cx}, ${mapCenter.cy}) scale(${sx}, ${sy}) translate(${-mapCenter.cx}, ${-mapCenter.cy})`);
+
     const tx = parseFloat(document.getElementById("tx-num").value) || 0;
     const ty = parseFloat(document.getElementById("ty-num").value) || 0;
     const scale = parseFloat(document.getElementById("scale-num").value) || 1;
     adjustGroup.setAttribute("transform", `translate(${tx}, ${ty}) scale(${scale})`);
 
+    document.getElementById("map-scale-val").textContent = mapScale.toFixed(2);
     document.getElementById("tx-val").textContent = tx;
     document.getElementById("ty-val").textContent = ty;
     document.getElementById("scale-val").textContent = scale.toFixed(2);
 
-    const config = { scenario: currentScenario, translateX: tx, translateY: ty, scale: scale };
+    const config = {
+      scenario: currentScenario,
+      map: { scale: mapScale, flipHorizontal: flipH, flipVertical: flipV },
+      vehicles: { translateX: tx, translateY: ty, scale: scale },
+    };
     const json = JSON.stringify(config, null, 2);
     document.getElementById("config-json").value = json;
     console.log("[ScarCrash calibration]", json);
@@ -187,12 +225,18 @@
 
   document.getElementById("scenario-select").addEventListener("change", (e) => loadScenario(e.target.value));
   document.getElementById("reset-btn").addEventListener("click", () => {
+    document.getElementById("map-scale-range").value = 1; document.getElementById("map-scale-num").value = 1;
+    document.getElementById("flip-h").checked = false;
+    document.getElementById("flip-v").checked = true;
     document.getElementById("tx-range").value = 0; document.getElementById("tx-num").value = 0;
     document.getElementById("ty-range").value = 0; document.getElementById("ty-num").value = 0;
     document.getElementById("scale-range").value = 1; document.getElementById("scale-num").value = 1;
     applyTransform();
   });
 
+  syncPair("map-scale-range", "map-scale-num");
+  document.getElementById("flip-h").addEventListener("change", applyTransform);
+  document.getElementById("flip-v").addEventListener("change", applyTransform);
   syncPair("tx-range", "tx-num");
   syncPair("ty-range", "ty-num");
   syncPair("scale-range", "scale-num");
