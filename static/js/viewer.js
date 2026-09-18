@@ -31,7 +31,7 @@
   let cameraImgEls = null;    // camName -> persistent <img>, built once
   let cameraRequestSeq = 0;   // guards against a slow preload overwriting a newer frame
 
-  let svg, svgGroup;
+  let svg, mapGroup, vehicleGroup;
   const dotEls = {};   // vehicle.id -> <circle>
   const pathEls = {};  // vehicle.id -> <polyline>
 
@@ -78,20 +78,51 @@
     svg.setAttribute("viewBox", `${vbX} ${vbY} ${vbW} ${vbH}`);
     svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
 
-    // Flip Y so the map reads north-up (SUMO/OpenDRIVE Y+ is north; SVG Y+ is down).
-    svgGroup = document.createElementNS(NS, "g");
-    svgGroup.setAttribute("transform", `translate(0, ${bounds.minY + bounds.maxY}) scale(1,-1)`);
-    svg.appendChild(svgGroup);
-
+    // Map and vehicles are separate sibling groups, each with their own
+    // independent transform (see applyMapAdjust below) -- set per-scenario
+    // via window.SCENARIO.mapAdjust, as dialed in with calibrate.html.
+    mapGroup = document.createElementNS(NS, "g");
     for (const lane of lanes) {
       const pts = lane.shape.map((p) => p.join(",")).join(" ");
       const poly = document.createElementNS(NS, "polyline");
       poly.setAttribute("points", pts);
       poly.setAttribute("class", "lane");
-      svgGroup.appendChild(poly);
+      mapGroup.appendChild(poly);
     }
+    svg.appendChild(mapGroup);
+
+    vehicleGroup = document.createElementNS(NS, "g");
+    svg.appendChild(vehicleGroup);
 
     wrap.appendChild(svg);
+    applyMapAdjust(bounds);
+  }
+
+  function applyMapAdjust(bounds) {
+    const adjust = (window.SCENARIO && window.SCENARIO.mapAdjust) || {};
+    const map = adjust.map || {};
+    const veh = adjust.vehicles || {};
+
+    // Defaults match the look every scenario had before per-scenario
+    // calibration existed: map scale 1, no horizontal flip, vertical flip on
+    // (SUMO/OpenDRIVE Y+ is north; SVG Y+ is down, so this reads north-up),
+    // vehicles untranslated at scale 1.
+    const mapScale = map.scale != null ? map.scale : 1;
+    const flipH = !!map.flipHorizontal;
+    const flipV = map.flipVertical != null ? map.flipVertical : true;
+    const sx = (flipH ? -1 : 1) * mapScale;
+    const sy = (flipV ? -1 : 1) * mapScale;
+    const cx = (bounds.minX + bounds.maxX) / 2;
+    const cy = (bounds.minY + bounds.maxY) / 2;
+    // Scale/flip around the map's own center so it stays in view rather
+    // than jumping off-screen, matching calibrate.html's behavior exactly.
+    mapGroup.setAttribute("transform",
+      `translate(${cx}, ${cy}) scale(${sx}, ${sy}) translate(${-cx}, ${-cy})`);
+
+    const tx = veh.translateX || 0;
+    const ty = veh.translateY || 0;
+    const vScale = veh.scale != null ? veh.scale : 1;
+    vehicleGroup.setAttribute("transform", `translate(${tx}, ${ty}) scale(${vScale})`);
   }
 
   function addVehicleToMap(v) {
@@ -100,7 +131,7 @@
     const path = document.createElementNS(NS, "polyline");
     path.setAttribute("class", `path-line ${v.category}`);
     path.setAttribute("points", "");
-    svgGroup.appendChild(path);
+    vehicleGroup.appendChild(path);
     pathEls[v.id] = path;
 
     const dot = document.createElementNS(NS, "circle");
@@ -119,7 +150,7 @@
       title.textContent = v.id + " (not recorded in this demo)";
       dot.appendChild(title);
     }
-    svgGroup.appendChild(dot);
+    vehicleGroup.appendChild(dot);
     dotEls[v.id] = dot;
   }
 
