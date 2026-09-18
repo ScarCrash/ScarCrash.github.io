@@ -19,6 +19,13 @@
   "use strict";
 
   const PLAYBACK_INTERVAL_MS = 450;
+  // Default raw dot radius for any scenario without an explicit
+  // mapAdjust.vehicles.dotRadius override. A scenario whose vehicles.scale
+  // is calibrated away from 1 (see five-way) usually needs its own
+  // dotRadius too, since this value is scaled by that same factor.
+  const DEFAULT_DOT_RADIUS = 5;
+
+  let dotRadius = DEFAULT_DOT_RADIUS; // resolved per-scenario in applyMapAdjust()
 
   let vehicles = [];          // from positions.json
   let maxFrame = 0;           // longest recording among all vehicles, 0-indexed
@@ -123,6 +130,8 @@
     const ty = veh.translateY || 0;
     const vScale = veh.scale != null ? veh.scale : 1;
     vehicleGroup.setAttribute("transform", `translate(${tx}, ${ty}) scale(${vScale})`);
+
+    dotRadius = veh.dotRadius != null ? veh.dotRadius : DEFAULT_DOT_RADIUS;
   }
 
   function addVehicleToMap(v) {
@@ -135,7 +144,7 @@
     pathEls[v.id] = path;
 
     const dot = document.createElementNS(NS, "circle");
-    dot.setAttribute("r", 5);
+    dot.setAttribute("r", dotRadius);
     dot.setAttribute("class", `vehicle-dot ${v.category}` + (v.interactive ? " interactive" : ""));
     const p0 = v.positions[0].map;
     dot.setAttribute("cx", p0[0]);

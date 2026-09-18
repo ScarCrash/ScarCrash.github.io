@@ -114,7 +114,9 @@
   stroke: #0f172a;
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
-  transition: r 0.15s ease;
+  transition: transform 0.15s ease;
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 .map-svg-wrap .vehicle-dot.colliding {
@@ -130,7 +132,10 @@
 }
 
 .map-svg-wrap .vehicle-dot.interactive:hover {
-  r: 7;
+  /* Relative scale, not an absolute r -- stays correct no matter what base
+     radius a given scenario's mapAdjust.vehicles.scale ends up compensated
+     to (see BASE_DOT_RADIUS in viewer.js). */
+  transform: scale(1.6);
 }
 
 .map-svg-wrap .vehicle-dot.selected {
