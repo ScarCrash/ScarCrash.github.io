@@ -72,21 +72,27 @@
     return { minX, maxX, minY, maxY };
   }
 
-  // Average of every vehicle's frame-0 position, in the SAME final
-  // coordinates they actually render at (after mapAdjust.vehicles'
-  // translate/scale) -- used as the zoom center below, so "zoom in" focuses
-  // on where the vehicles/action actually are, not the raw lane bounds.
-  function vehicleClusterCenter(vehicleList, vehAdjust) {
+  // Bounding box of EVERY vehicle's ENTIRE trajectory (all frames, not just
+  // frame 0), in the SAME final coordinates they actually render at (after
+  // mapAdjust.vehicles' translate/scale). Used to size the zoomed viewBox so
+  // it's IMPOSSIBLE to clip a vehicle at any point during playback, no
+  // matter how tight a zoom is requested.
+  function vehicleBoundsTransformed(vehicleList, vehAdjust) {
     const tx = vehAdjust.translateX || 0;
     const ty = vehAdjust.translateY || 0;
     const vScale = vehAdjust.scale != null ? vehAdjust.scale : 1;
-    let sumX = 0, sumY = 0;
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
     for (const v of vehicleList) {
-      const [x, y] = v.positions[0].map;
-      sumX += x * vScale + tx;
-      sumY += y * vScale + ty;
+      for (const p of v.positions) {
+        const x = p.map[0] * vScale + tx;
+        const y = p.map[1] * vScale + ty;
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
     }
-    return { cx: sumX / vehicleList.length, cy: sumY / vehicleList.length };
+    return { minX, maxX, minY, maxY };
   }
 
   function buildMapSvg(lanes, bounds) {
@@ -97,17 +103,40 @@
     let vbW = (bounds.maxX - bounds.minX) + 2 * pad;
     let vbH = (bounds.maxY - bounds.minY) + 2 * pad;
 
-    // Zoom shrinks the viewBox (not the map/vehicle transforms) around the
-    // vehicle cluster's own center, so everything on screen gets bigger
-    // without needing to re-touch the alignment calibration at all.
+    // Zoom shrinks the viewBox (not the map/vehicle transforms) toward the
+    // vehicles' own footprint, so everything on screen gets bigger without
+    // touching the alignment calibration at all. The requested zoom is a
+    // target, not a guarantee -- it's clamped to whatever's needed to keep
+    // every INTERACTIVE vehicle's full trajectory in frame for the whole
+    // animation, so a too-aggressive zoom can never clip a clickable
+    // vehicle off-screen. Non-interactive background traffic can drift out
+    // of a tight zoom -- that's the point of zooming in on the crash.
     const adjust = (window.SCENARIO && window.SCENARIO.mapAdjust) || {};
     const zoom = adjust.zoom || 1;
     if (zoom > 1) {
-      const center = vehicleClusterCenter(vehicles, adjust.vehicles || {});
-      vbW = vbW / zoom;
-      vbH = vbH / zoom;
-      vbX = center.cx - vbW / 2;
-      vbY = center.cy - vbH / 2;
+      // Fit around each vehicle's LAST frame (the moment of/near collision),
+      // not its entire path -- a collider can start far from the crash
+      // site, and fitting its whole route would force a wide box no matter
+      // how tight a zoom is requested. Earlier frames may then sit closer
+      // to the edges; that's the standard trade-off for a "zoomed on the
+      // crash" framing.
+      const mustFitVehicles = (vehicles.some((v) => v.interactive)
+        ? vehicles.filter((v) => v.interactive)
+        : vehicles
+      ).map((v) => ({ positions: [v.positions[v.positions.length - 1]] }));
+      const vb = vehicleBoundsTransformed(mustFitVehicles, adjust.vehicles || {});
+      const vbPad = Math.max(vb.maxX - vb.minX, vb.maxY - vb.minY) * 0.25;
+      const fitW = (vb.maxX - vb.minX) + 2 * vbPad;
+      const fitH = (vb.maxY - vb.minY) + 2 * vbPad;
+      const fitCx = (vb.minX + vb.maxX) / 2;
+      const fitCy = (vb.minY + vb.maxY) / 2;
+
+      const finalW = Math.max(vbW / zoom, fitW);
+      const finalH = Math.max(vbH / zoom, fitH);
+      vbW = finalW;
+      vbH = finalH;
+      vbX = fitCx - vbW / 2;
+      vbY = fitCy - vbH / 2;
     }
 
     const NS = "http://www.w3.org/2000/svg";
