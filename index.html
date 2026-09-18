@@ -154,7 +154,7 @@
         <p>Demo video coming soon</p>
       </div>
       <h2 class="subtitle has-text-centered" style="margin-top: 1.5rem;">
-        A red sedan and a green hatchback collide near a 4-way unsignalised intersection in Town04 -- one of the two scenarios in ScarCrash.
+        A red sedan and a green hatchback collide near a 4-way unsignalised intersection in Town04 -- one of three scenarios in ScarCrash.
       </h2>
     </div>
   </div>
@@ -172,7 +172,7 @@
             ScarCrash is a synthetic dataset of multi-vehicle traffic collisions generated in the
             <a href="https://carla.org/" target="_blank">CARLA</a> simulator using
             <a href="https://github.com/carla-simulator/scenario_runner" target="_blank">scenario_runner</a>.
-            It provides two hand-built collision scenarios, each populated with several deliberately
+            It provides three hand-built collision scenarios, each populated with several deliberately
             colliding vehicles and roughly 30 background traffic vehicles driving normally nearby.
           </p>
           <p>
@@ -197,7 +197,7 @@
     <div class="container is-max-desktop">
       <h2 class="title is-3 has-text-centered">Scenarios</h2>
       <div class="columns is-centered">
-        <div class="column is-half">
+        <div class="column is-one-third">
           <div class="scenario-card">
             <span class="map-tag">Town03</span>
             <h3 class="title is-5">5-Way Signalised Intersection Collision</h3>
@@ -215,7 +215,7 @@
             </a>
           </div>
         </div>
-        <div class="column is-half">
+        <div class="column is-one-third">
           <div class="scenario-card">
             <span class="map-tag">Town04</span>
             <h3 class="title is-5">4-Way Unsignalised Intersection Collision</h3>
@@ -233,12 +233,30 @@
             </a>
           </div>
         </div>
+        <div class="column is-one-third">
+          <div class="scenario-card">
+            <span class="map-tag">Town04</span>
+            <h3 class="title is-5">Stationary Hazard Collision</h3>
+            <p>A stationary vehicle sits as a hazard in the road; a firetruck drives into it,
+              surrounded by ~28 background vehicles driving normally nearby.</p>
+            <ul>
+              <li>2 deliberately colliding vehicles (a stationary hazard + the firetruck)</li>
+              <li>~28 background traffic vehicles</li>
+              <li>Ends automatically 0.5 seconds after the collision is detected</li>
+              <li>6 witness vehicles + both colliding vehicles have full 6-camera + full 360-degree LiDAR recordings in the interactive viewer</li>
+            </ul>
+            <a href="scenarios/stationary-hazard/index.html" class="button is-normal is-rounded" style="background:var(--primary-color); color:#fff; margin-top:0.75rem;">
+              <span class="icon"><i class="fas fa-map-marked-alt"></i></span>
+              <span>Open Interactive Viewer</span>
+            </a>
+          </div>
+        </div>
       </div>
       <p class="has-text-centered" style="margin-top: 1.5rem;">
         Every vehicle in the scene can be picked as the recording target at launch time, no code
         changes required -- see the
         <a href="https://github.com/ScarCrash/CARLA_Collision_Scenarios_Simulation#choosing-what-to-record" target="_blank">Documentation</a>
-        for details. Two more scenarios are planned and will be added here later.
+        for details. One more scenario is planned and will be added here later.
       </p>
     </div>
   </div>

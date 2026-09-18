@@ -38,10 +38,24 @@
   // ---- Three.js LiDAR viewer state (created lazily on first use) ----
   let three = null; // { renderer, scene, camera, controls, points }
 
-  function boundsFromLanes(lanes) {
+  function boundsFromLanes(lanes, vehicles) {
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
     for (const lane of lanes) {
       for (const [x, y] of lane.shape) {
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+    }
+    // Union with actual vehicle positions too -- the extracted lane geometry
+    // doesn't necessarily cover every spot a background vehicle spawns at
+    // (e.g. a remote parking area at the edge of the map), and a vehicle
+    // outside the viewBox would be invisible/clipped rather than just
+    // slightly off-road.
+    for (const v of vehicles || []) {
+      for (const p of v.positions) {
+        const [x, y] = p.map;
         if (x < minX) minX = x;
         if (x > maxX) maxX = x;
         if (y < minY) minY = y;
@@ -410,7 +424,7 @@
         vehicles = data.vehicles;
         maxFrame = Math.max(...vehicles.map((v) => v.frame_count)) - 1;
 
-        const bounds = boundsFromLanes(cfg.lanes);
+        const bounds = boundsFromLanes(cfg.lanes, vehicles);
         buildMapSvg(cfg.lanes, bounds);
         for (const v of vehicles) addVehicleToMap(v);
 
