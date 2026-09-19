@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta name="title" content="Red Light Left-Turn Collision -- ScarCrash">
+  <meta name="description" content="Interactive viewer for the ScarCrash red-light-running / left-turn collision scenario: top-down trajectory map plus synchronized camera and LiDAR data.">
+  <meta name="robots" content="index, follow">
+
+  <title>Red Light Left-Turn Collision -- ScarCrash</title>
+
+  <link rel="icon" type="image/x-icon" href="../../static/images/favicon.ico">
+
+  <link rel="stylesheet" href="../../static/css/bulma.min.css">
+  <link rel="stylesheet" href="../../static/css/index.css">
+  <link rel="stylesheet" href="../../static/css/viewer.css">
+  <link rel="stylesheet" href="../../static/css/fontawesome.all.min.css">
+
+  <script defer src="../../static/js/fontawesome.all.min.js"></script>
+</head>
+<body>
+
+  <header class="viewer-header">
+    <div>
+      <a href="../../index.html" class="back-link"><i class="fas fa-arrow-left"></i> ScarCrash</a>
+      <h1>Red Light Left-Turn Collision <span style="color:var(--text-secondary); font-weight:500;">&middot; Town03</span></h1>
+    </div>
+    <div class="viewer-legend">
+      <span><span class="dot" style="background:#ef4444;"></span>Colliding vehicle</span>
+      <span><span class="dot" style="background:#facc15;"></span>Witness vehicle</span>
+      <span><span class="dot" style="background:#38bdf8; border-radius:2px;"></span>Click a highlighted dot to view its data</span>
+    </div>
+  </header>
+
+  <div class="viewer-layout">
+    <div class="map-panel">
+      <div id="map-svg-wrap" class="map-svg-wrap"></div>
+      <p class="map-hint">A vehicle runs a red light and collides with another vehicle making a left turn across its path, at a signalised intersection. Both colliding vehicles and 6 selected witnesses (bold, clickable) have recorded camera/LiDAR data in this demo -- all 19 vehicles' positions are shown for context. Every LiDAR frame is a genuine full 360-degree sweep.</p>
+      <div class="playback-controls">
+        <button id="btn-prev" title="Previous frame"><i class="fas fa-step-backward"></i></button>
+        <button id="btn-play" title="Play/pause"><i class="fas fa-play"></i></button>
+        <button id="btn-next" title="Next frame"><i class="fas fa-step-forward"></i></button>
+        <input id="frame-slider" class="frame-slider" type="range" min="0" max="0" value="0" step="1">
+        <span id="frame-label" class="frame-label">1 / 1</span>
+      </div>
+    </div>
+
+    <div class="data-panel">
+      <div id="data-panel-empty" class="data-panel-empty">
+        <p>Click a colliding vehicle or highlighted witness on the map to view its recorded camera and LiDAR data.</p>
+      </div>
+      <div id="data-panel-content" style="display:none; flex-direction:column; gap:1rem; flex:1;">
+        <div id="selected-vehicle-label" class="selected-vehicle-label"></div>
+        <div class="data-tabs">
+          <button data-tab="cameras" class="active">Cameras</button>
+          <button data-tab="lidar">LiDAR</button>
+        </div>
+        <div id="tab-cameras" class="tab-panel active">
+          <div id="camera-grid" class="camera-grid"></div>
+        </div>
+        <div id="tab-lidar" class="tab-panel">
+          <div id="lidar-view-wrap" class="lidar-view-wrap">
+            <canvas id="lidar-canvas"></canvas>
+            <span id="lidar-point-count" class="lidar-hint"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="../../static/js/lanes_town03.js"></script>
+  <script>
+    window.SCENARIO = {
+      lanes: LANES_TOWN03,
+      dataUrl: "data/positions.json",
+      mediaBase: "data/media",
+      // Not yet calibrated with calibrate.html -- uses viewer.js defaults
+      // (same as four-way/stationary-hazard before their own calibration).
+    };
+  </script>
+  <script src="../../static/js/viewer.js"></script>
+</body>
+</html>
