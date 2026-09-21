@@ -42,6 +42,7 @@
     <option value="five-way">5-way (Town03)</option>
     <option value="four-way">4-way (Town04)</option>
     <option value="stationary-hazard">Stationary hazard (Town04)</option>
+    <option value="red-light-left-turn">Red light left-turn (Town03)</option>
   </select>
 
   <h3>Map (lanes)</h3>
@@ -103,6 +104,7 @@
     "five-way": { lanes: () => LANES_TOWN03, dataUrl: "scenarios/five-way/data/positions.json" },
     "four-way": { lanes: () => LANES_TOWN04, dataUrl: "scenarios/four-way/data/positions.json" },
     "stationary-hazard": { lanes: () => LANES_TOWN04, dataUrl: "scenarios/stationary-hazard/data/positions.json" },
+    "red-light-left-turn": { lanes: () => LANES_TOWN03, dataUrl: "scenarios/red-light-left-turn/data/positions.json" },
   };
 
   const NS = "http://www.w3.org/2000/svg";
