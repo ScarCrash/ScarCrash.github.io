@@ -254,6 +254,15 @@
     controls.appendChild(zoomLabelEl);
     controls.appendChild(zoomIn);
     wrap.appendChild(controls);
+
+    // Per-scenario starting zoom (e.g. four-way's mapAdjust.initialZoom:
+    // 3.05 for a 305% default) -- still just moves the same zoomLevel the
+    // +/- buttons use, so it stays fully adjustable from there.
+    const adjust = (window.SCENARIO && window.SCENARIO.mapAdjust) || {};
+    if (adjust.initialZoom) {
+      zoomLevel = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, adjust.initialZoom));
+      applyInteractiveZoom();
+    }
   }
 
   function addVehicleToMap(v) {
