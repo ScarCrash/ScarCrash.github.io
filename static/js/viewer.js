@@ -194,10 +194,14 @@
     const sy = (flipV ? -1 : 1) * mapScale;
     const cx = (bounds.minX + bounds.maxX) / 2;
     const cy = (bounds.minY + bounds.maxY) / 2;
+    const mapTx = map.translateX || 0;
+    const mapTy = map.translateY || 0;
     // Scale/flip around the map's own center so it stays in view rather
     // than jumping off-screen, matching calibrate.html's behavior exactly.
+    // The outer translate(mapTx, mapTy) shifts the whole map afterward,
+    // independent of the center-pivot scale/flip.
     mapGroup.setAttribute("transform",
-      `translate(${cx}, ${cy}) scale(${sx}, ${sy}) translate(${-cx}, ${-cy})`);
+      `translate(${mapTx}, ${mapTy}) translate(${cx}, ${cy}) scale(${sx}, ${sy}) translate(${-cx}, ${-cy})`);
 
     const tx = veh.translateX || 0;
     const ty = veh.translateY || 0;

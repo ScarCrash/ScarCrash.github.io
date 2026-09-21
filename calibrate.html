@@ -62,6 +62,18 @@
     <label for="flip-v" style="margin:0;">Flip vertical (default on -- north-up)</label>
   </div>
 
+  <label>Map translate X (<span id="map-tx-val">0</span>)</label>
+  <div class="row">
+    <input type="range" id="map-tx-range" min="-300" max="300" step="0.5" value="0">
+    <input type="number" id="map-tx-num" step="0.5" value="0">
+  </div>
+
+  <label>Map translate Y (<span id="map-ty-val">0</span>)</label>
+  <div class="row">
+    <input type="range" id="map-ty-range" min="-300" max="300" step="0.5" value="0">
+    <input type="number" id="map-ty-num" step="0.5" value="0">
+  </div>
+
   <h3>Vehicle dots</h3>
 
   <label>Translate X (<span id="tx-val">0</span>)</label>
@@ -179,10 +191,13 @@
     const flipV = document.getElementById("flip-v").checked;
     const sx = (flipH ? -1 : 1) * mapScale;
     const sy = (flipV ? -1 : 1) * mapScale;
+    const mapTx = parseFloat(document.getElementById("map-tx-num").value) || 0;
+    const mapTy = parseFloat(document.getElementById("map-ty-num").value) || 0;
     // Scale/flip around the map's own center (not the SVG origin) so it
-    // stays roughly in view instead of jumping off-screen.
+    // stays roughly in view instead of jumping off-screen. The outer
+    // translate(mapTx, mapTy) then shifts the whole map afterward.
     mapGroup.setAttribute("transform",
-      `translate(${mapCenter.cx}, ${mapCenter.cy}) scale(${sx}, ${sy}) translate(${-mapCenter.cx}, ${-mapCenter.cy})`);
+      `translate(${mapTx}, ${mapTy}) translate(${mapCenter.cx}, ${mapCenter.cy}) scale(${sx}, ${sy}) translate(${-mapCenter.cx}, ${-mapCenter.cy})`);
 
     const tx = parseFloat(document.getElementById("tx-num").value) || 0;
     const ty = parseFloat(document.getElementById("ty-num").value) || 0;
@@ -190,13 +205,15 @@
     adjustGroup.setAttribute("transform", `translate(${tx}, ${ty}) scale(${scale})`);
 
     document.getElementById("map-scale-val").textContent = mapScale.toFixed(2);
+    document.getElementById("map-tx-val").textContent = mapTx;
+    document.getElementById("map-ty-val").textContent = mapTy;
     document.getElementById("tx-val").textContent = tx;
     document.getElementById("ty-val").textContent = ty;
     document.getElementById("scale-val").textContent = scale.toFixed(2);
 
     const config = {
       scenario: currentScenario,
-      map: { scale: mapScale, flipHorizontal: flipH, flipVertical: flipV },
+      map: { scale: mapScale, flipHorizontal: flipH, flipVertical: flipV, translateX: mapTx, translateY: mapTy },
       vehicles: { translateX: tx, translateY: ty, scale: scale },
     };
     const json = JSON.stringify(config, null, 2);
@@ -230,6 +247,8 @@
     document.getElementById("map-scale-range").value = 1; document.getElementById("map-scale-num").value = 1;
     document.getElementById("flip-h").checked = false;
     document.getElementById("flip-v").checked = true;
+    document.getElementById("map-tx-range").value = 0; document.getElementById("map-tx-num").value = 0;
+    document.getElementById("map-ty-range").value = 0; document.getElementById("map-ty-num").value = 0;
     document.getElementById("tx-range").value = 0; document.getElementById("tx-num").value = 0;
     document.getElementById("ty-range").value = 0; document.getElementById("ty-num").value = 0;
     document.getElementById("scale-range").value = 1; document.getElementById("scale-num").value = 1;
@@ -239,6 +258,8 @@
   syncPair("map-scale-range", "map-scale-num");
   document.getElementById("flip-h").addEventListener("change", applyTransform);
   document.getElementById("flip-v").addEventListener("change", applyTransform);
+  syncPair("map-tx-range", "map-tx-num");
+  syncPair("map-ty-range", "map-ty-num");
   syncPair("tx-range", "tx-num");
   syncPair("ty-range", "ty-num");
   syncPair("scale-range", "scale-num");
