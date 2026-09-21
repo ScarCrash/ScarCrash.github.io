@@ -42,6 +42,18 @@
   const dotEls = {};   // vehicle.id -> <circle>
   const pathEls = {};  // vehicle.id -> <polyline>
 
+  // ---- Interactive +/- zoom (separate from the static per-scenario
+  // mapAdjust.zoom baked into buildMapSvg) -- zooms the SVG viewBox itself,
+  // so map lanes and vehicle dots zoom together as one image rather than
+  // needing independent transforms. baseViewBox is whatever buildMapSvg()
+  // already computed (bounds fit, plus any static mapAdjust.zoom); the
+  // buttons scale relative to that, centered on its own center point.
+  let baseViewBox = null; // { x, y, w, h }
+  let zoomLevel = 1;
+  const ZOOM_STEP = 1.25;
+  const ZOOM_MIN = 1;   // never zoom out past the original fit (would show empty space)
+  const ZOOM_MAX = 8;
+
   // ---- Three.js LiDAR viewer state (created lazily on first use) ----
   let three = null; // { renderer, scene, camera, controls, points }
 
@@ -139,6 +151,8 @@
       vbY = fitCy - vbH / 2;
     }
 
+    baseViewBox = { x: vbX, y: vbY, w: vbW, h: vbH };
+
     const NS = "http://www.w3.org/2000/svg";
     svg = document.createElementNS(NS, "svg");
     svg.setAttribute("viewBox", `${vbX} ${vbY} ${vbW} ${vbH}`);
@@ -191,6 +205,55 @@
     vehicleGroup.setAttribute("transform", `translate(${tx}, ${ty}) scale(${vScale})`);
 
     dotRadius = veh.dotRadius != null ? veh.dotRadius : DEFAULT_DOT_RADIUS;
+  }
+
+  let zoomLabelEl = null;
+
+  function applyInteractiveZoom() {
+    if (!baseViewBox) return;
+    const cx = baseViewBox.x + baseViewBox.w / 2;
+    const cy = baseViewBox.y + baseViewBox.h / 2;
+    const w = baseViewBox.w / zoomLevel;
+    const h = baseViewBox.h / zoomLevel;
+    svg.setAttribute("viewBox", `${cx - w / 2} ${cy - h / 2} ${w} ${h}`);
+    if (zoomLabelEl) zoomLabelEl.textContent = `${Math.round(zoomLevel * 100)}%`;
+  }
+
+  function setupZoomControls() {
+    const wrap = document.getElementById("map-svg-wrap");
+
+    const controls = document.createElement("div");
+    controls.className = "map-zoom-controls";
+
+    const zoomOut = document.createElement("button");
+    zoomOut.type = "button";
+    zoomOut.className = "map-zoom-btn";
+    zoomOut.title = "Zoom out";
+    zoomOut.textContent = "−"; // minus sign
+
+    zoomLabelEl = document.createElement("span");
+    zoomLabelEl.className = "map-zoom-label";
+    zoomLabelEl.textContent = "100%";
+
+    const zoomIn = document.createElement("button");
+    zoomIn.type = "button";
+    zoomIn.className = "map-zoom-btn";
+    zoomIn.title = "Zoom in";
+    zoomIn.textContent = "+";
+
+    zoomIn.addEventListener("click", () => {
+      zoomLevel = Math.min(ZOOM_MAX, zoomLevel * ZOOM_STEP);
+      applyInteractiveZoom();
+    });
+    zoomOut.addEventListener("click", () => {
+      zoomLevel = Math.max(ZOOM_MIN, zoomLevel / ZOOM_STEP);
+      applyInteractiveZoom();
+    });
+
+    controls.appendChild(zoomOut);
+    controls.appendChild(zoomLabelEl);
+    controls.appendChild(zoomIn);
+    wrap.appendChild(controls);
   }
 
   function addVehicleToMap(v) {
@@ -527,6 +590,7 @@
         buildMapSvg(cfg.lanes, bounds);
         for (const v of vehicles) addVehicleToMap(v);
 
+        setupZoomControls();
         setupPlaybackControls();
         renderFrame(0);
       })

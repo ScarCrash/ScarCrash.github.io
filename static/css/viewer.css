@@ -87,6 +87,47 @@
   display: block;
 }
 
+.map-zoom-controls {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(15, 23, 42, 0.7);
+  border-radius: var(--border-radius);
+  padding: 0.3rem 0.5rem;
+  z-index: 2;
+}
+
+.map-zoom-btn {
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.map-zoom-btn:hover {
+  background: var(--primary-color);
+}
+
+.map-zoom-label {
+  color: #fff;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  min-width: 2.6rem;
+  text-align: center;
+}
+
 .map-svg-wrap .lane {
   fill: none;
   stroke: #475569;
