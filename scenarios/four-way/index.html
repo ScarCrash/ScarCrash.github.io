@@ -77,6 +77,11 @@
       lanes: LANES_TOWN04,
       dataUrl: "data/positions.json",
       mediaBase: "data/media",
+      // Dialed in via calibrate.html.
+      mapAdjust: {
+        map: { scale: 0.375, flipHorizontal: false, flipVertical: false },
+        vehicles: { translateX: -260.5, translateY: 69.5, scale: 1.39 },
+      },
     };
   </script>
   <script src="../../static/js/viewer.js"></script>
