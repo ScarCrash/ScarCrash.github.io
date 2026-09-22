@@ -269,6 +269,16 @@
     }
   }
 
+  // v.id (e.g. "witness_v06", "colliding_v01") is the actual media folder
+  // name on disk -- fetch URLs must keep the full id. This strips the
+  // category prefix ONLY for what's shown to the user (tooltip, selected-
+  // vehicle panel label), since the category is already shown separately
+  // there (the legend dot color, or the "Colliding vehicle"/"Surrounding
+  // vehicle" tag), making the prefix redundant in the label text.
+  function shortId(id) {
+    return id.replace(/^(colliding|witness)_/, "");
+  }
+
   function addVehicleToMap(v) {
     const NS = "http://www.w3.org/2000/svg";
 
@@ -287,11 +297,11 @@
     if (v.interactive) {
       dot.addEventListener("click", () => selectVehicle(v));
       const title = document.createElementNS(NS, "title");
-      title.textContent = v.id + " (click to view data)";
+      title.textContent = shortId(v.id) + " (click to view data)";
       dot.appendChild(title);
     } else {
       const title = document.createElementNS(NS, "title");
-      title.textContent = v.id + " (not recorded in this demo)";
+      title.textContent = shortId(v.id) + " (not recorded in this demo)";
       dot.appendChild(title);
     }
     vehicleGroup.appendChild(dot);
@@ -337,7 +347,7 @@
     tag.className = `tag ${v.category}`;
     tag.textContent = v.category === "colliding" ? "Colliding vehicle" : "Surrounding vehicle";
     label.appendChild(tag);
-    label.appendChild(document.createTextNode(v.id));
+    label.appendChild(document.createTextNode(shortId(v.id)));
 
     renderDataPanel(v, clampedIndex(v, currentFrame));
   }
