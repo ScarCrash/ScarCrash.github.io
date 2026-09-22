@@ -335,7 +335,7 @@
     label.innerHTML = "";
     const tag = document.createElement("span");
     tag.className = `tag ${v.category}`;
-    tag.textContent = v.category === "colliding" ? "Colliding vehicle" : "Witness";
+    tag.textContent = v.category === "colliding" ? "Colliding vehicle" : "Surrounding vehicle";
     label.appendChild(tag);
     label.appendChild(document.createTextNode(v.id));
 

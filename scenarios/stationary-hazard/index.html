@@ -28,7 +28,7 @@
     </div>
     <div class="viewer-legend">
       <span><span class="dot" style="background:#ef4444;"></span>Colliding vehicle</span>
-      <span><span class="dot" style="background:#facc15;"></span>Witness vehicle</span>
+      <span><span class="dot" style="background:#facc15;"></span>Surrounding vehicle</span>
       <span><span class="dot" style="background:#38bdf8; border-radius:2px;"></span>Click a highlighted dot to view its data</span>
     </div>
   </header>
@@ -36,7 +36,7 @@
   <div class="viewer-layout">
     <div class="map-panel">
       <div id="map-svg-wrap" class="map-svg-wrap"></div>
-      <p class="map-hint">Only the 2 colliding vehicles and 6 selected witnesses (bold, clickable) have recorded camera/LiDAR data in this demo -- all ~30 vehicles' positions are shown for context. Every LiDAR frame is a genuine full 360-degree sweep.</p>
+      <p class="map-hint">Only the 2 colliding vehicles and 6 selected surrounding vehicles (bold, clickable) have recorded camera/LiDAR data in this demo -- all ~30 vehicles' positions are shown for context. Every LiDAR frame is a genuine full 360-degree sweep.</p>
       <div class="playback-controls">
         <button id="btn-prev" title="Previous frame"><i class="fas fa-step-backward"></i></button>
         <button id="btn-play" title="Play/pause"><i class="fas fa-play"></i></button>
@@ -48,7 +48,7 @@
 
     <div class="data-panel">
       <div id="data-panel-empty" class="data-panel-empty">
-        <p>Click a colliding vehicle or highlighted witness on the map to view its recorded camera and LiDAR data.</p>
+        <p>Click a colliding vehicle or highlighted surrounding vehicle on the map to view its recorded camera and LiDAR data.</p>
       </div>
       <div id="data-panel-content" style="display:none; flex-direction:column; gap:1rem; flex:1;">
         <div id="selected-vehicle-label" class="selected-vehicle-label"></div>
