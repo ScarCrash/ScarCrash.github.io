@@ -75,15 +75,29 @@ html {
   margin-bottom: 0.25rem;
 }
 
-.scenario-card .map-tag {
-  display: inline-block;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--primary-color);
-  background: var(--background-accent);
-  padding: 0.25rem 0.75rem;
+.scenario-card .video-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  aspect-ratio: 16 / 9;
+  border: 2px dashed var(--border-color);
   border-radius: var(--border-radius);
+  background: var(--background-secondary);
+  color: var(--text-secondary);
   margin-bottom: 1rem;
+}
+
+.scenario-card .video-placeholder .icon {
+  font-size: 1.5rem;
+  color: var(--text-light);
+}
+
+.scenario-card .video-placeholder p {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 .scenario-card ul {
