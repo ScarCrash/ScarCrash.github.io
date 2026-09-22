@@ -75,6 +75,15 @@ html {
   margin-bottom: 0.25rem;
 }
 
+.scenario-card .scenario-video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--border-radius);
+  background: #000;
+  margin-bottom: 1rem;
+}
+
 .scenario-card .video-placeholder {
   display: flex;
   flex-direction: column;
