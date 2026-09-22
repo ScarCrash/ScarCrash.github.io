@@ -108,6 +108,7 @@
 
 <script src="static/js/lanes_town03.js"></script>
 <script src="static/js/lanes_town04.js"></script>
+<script src="static/js/lanes_redlight_3way.js"></script>
 <script>
 (function () {
   "use strict";
@@ -116,7 +117,7 @@
     "five-way": { lanes: () => LANES_TOWN03, dataUrl: "scenarios/five-way/data/positions.json" },
     "four-way": { lanes: () => LANES_TOWN04, dataUrl: "scenarios/four-way/data/positions.json" },
     "stationary-hazard": { lanes: () => LANES_TOWN04, dataUrl: "scenarios/stationary-hazard/data/positions.json" },
-    "red-light-left-turn": { lanes: () => LANES_TOWN03, dataUrl: "scenarios/red-light-left-turn/data/positions.json" },
+    "red-light-left-turn": { lanes: () => LANES_REDLIGHT_3WAY, dataUrl: "scenarios/red-light-left-turn/data/positions.json" },
   };
 
   const NS = "http://www.w3.org/2000/svg";
