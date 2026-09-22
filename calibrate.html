@@ -126,10 +126,25 @@
   let currentScenario = null;
   let mapCenter = { cx: 0, cy: 0 };
 
-  function boundsFromLanes(lanes) {
+  function boundsFromLanes(lanes, vehicles) {
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
     for (const lane of lanes) {
       for (const [x, y] of lane.shape) {
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+    }
+    // Union with vehicle positions too -- MUST match viewer.js's
+    // boundsFromLanes() exactly, since this bounds' center is the pivot
+    // point map.scale/flip rotates around. A scenario whose vehicles extend
+    // beyond its own lane file (e.g. a focused/partial map export) would
+    // otherwise get a DIFFERENT pivot here than on the live page, making a
+    // calibration that looks correct in this tool render wrong there.
+    for (const v of vehicles || []) {
+      for (const p of v.positions) {
+        const [x, y] = p.map;
         if (x < minX) minX = x;
         if (x > maxX) maxX = x;
         if (y < minY) minY = y;
@@ -143,7 +158,7 @@
     const wrap = document.getElementById("svg-wrap");
     wrap.innerHTML = "";
 
-    const bounds = boundsFromLanes(lanes);
+    const bounds = boundsFromLanes(lanes, vehicles);
     mapCenter = { cx: (bounds.minX + bounds.maxX) / 2, cy: (bounds.minY + bounds.maxY) / 2 };
     const pad = Math.max(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY) * 0.05;
     const vbX = bounds.minX - pad, vbY = bounds.minY - pad;
