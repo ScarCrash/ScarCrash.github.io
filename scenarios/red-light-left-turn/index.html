@@ -77,8 +77,11 @@
       lanes: LANES_REDLIGHT_3WAY,
       dataUrl: "data/positions.json",
       mediaBase: "data/media",
-      // Not yet calibrated with calibrate.html -- uses viewer.js defaults
-      // (same as four-way/stationary-hazard before their own calibration).
+      // Dialed in via calibrate.html.
+      mapAdjust: {
+        map: { scale: 1, flipHorizontal: false, flipVertical: true, translateX: 0, translateY: 0 },
+        vehicles: { translateX: -8, translateY: -201.5, scale: 1.02 },
+      },
     };
   </script>
   <script src="../../static/js/viewer.js"></script>
