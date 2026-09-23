@@ -102,8 +102,15 @@
               </span>
             </div>
 
-            <div class="is-size-5 publication-authors">
-              <span class="author-block">Synthetic multi-vehicle collision scenarios with multi-modal sensor data, built in CARLA</span>
+            <div class="is-size-5 publication-authors" style="max-width: 760px; margin: 0 auto;">
+              <span class="author-block">
+                ScarCrash is a synthetic dataset of traffic collisions generated in CARLA using
+                scenario_runner, where surrounding vehicles observe each incident from multiple
+                vantage points. Every scenario records synchronized multi-camera and LiDAR sensor
+                data from both the colliding and surrounding vehicles, providing multi-viewpoint
+                sensor evidence suited to incident investigation as well as autonomous-driving
+                research.
+              </span>
             </div>
 
             <div class="column has-text-centered">
@@ -144,36 +151,6 @@
     </div>
   </div>
 </section>
-
-<!-- Overview -->
-<section class="section hero is-light">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Overview</h2>
-        <div class="content has-text-justified">
-          <p>
-            ScarCrash is a synthetic dataset of multi-vehicle traffic collisions generated in the
-            <a href="https://carla.org/" target="_blank">CARLA</a> simulator using
-            <a href="https://github.com/carla-simulator/scenario_runner" target="_blank">scenario_runner</a>.
-            It provides four hand-built collision scenarios, each populated with several deliberately
-            colliding vehicles and roughly 30 background traffic vehicles driving normally nearby.
-          </p>
-          <p>
-            For every recording, sensor data is captured from a single chosen vehicle at a time:
-            six synchronized surround-view RGB cameras, one top-mounted LiDAR, and a combined
-            per-frame calibration file, in a layout compatible with the
-            <a href="https://github.com/deepaccident/DeepAccident" target="_blank">DeepAccident</a>
-            dataset format. Because any vehicle in the scene -- the observing ego vehicle, either
-            colliding vehicle, or any background vehicle -- can be selected as the recording target,
-            the same collision can be captured from many different vantage points across separate runs.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End overview -->
 
 <!-- Scenarios -->
 <section class="hero is-small">
