@@ -113,6 +113,15 @@ html {
   color: var(--text-primary);
 }
 
+.data-format-subtitle {
+  margin: 2.5rem 0 1.25rem !important;
+  color: var(--primary-color);
+}
+
+.data-format-subtitle:first-of-type {
+  margin-top: 1.5rem !important;
+}
+
 /* Sample LiDAR point-cloud widget (Data Format section) */
 .lidar-sample-wrap {
   max-width: 700px;
