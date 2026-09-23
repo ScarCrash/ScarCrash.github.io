@@ -225,12 +225,40 @@
   <div class="hero-body">
     <div class="container is-max-desktop">
       <h2 class="title is-3 has-text-centered">Sample Data</h2>
-      <div class="placeholder-box">
-        <span class="icon"><i class="fas fa-images"></i></span>
-        <p>Sample camera and LiDAR frames will be added here</p>
+      <div class="surround-grid">
+        <figure class="surround-cell cell-front">
+          <img src="static/images/sample-surround/front.jpg" alt="Front camera">
+          <figcaption>Front</figcaption>
+        </figure>
+        <figure class="surround-cell cell-front-left">
+          <img src="static/images/sample-surround/front-left.jpg" alt="Front-left camera">
+          <figcaption>Front Left</figcaption>
+        </figure>
+        <figure class="surround-cell cell-front-right">
+          <img src="static/images/sample-surround/front-right.jpg" alt="Front-right camera">
+          <figcaption>Front Right</figcaption>
+        </figure>
+        <div class="surround-cell cell-vehicle">
+          <img src="static/images/sample-surround/vehicle-top-down.jpg" alt="Recorded vehicle">
+        </div>
+        <figure class="surround-cell cell-back-left">
+          <img src="static/images/sample-surround/back-left.jpg" alt="Back-left camera">
+          <figcaption>Back Left</figcaption>
+        </figure>
+        <figure class="surround-cell cell-back-right">
+          <img src="static/images/sample-surround/back-right.jpg" alt="Back-right camera">
+          <figcaption>Back Right</figcaption>
+        </figure>
+        <figure class="surround-cell cell-back">
+          <img src="static/images/sample-surround/back.jpg" alt="Back camera">
+          <figcaption>Back</figcaption>
+        </figure>
       </div>
+      <p class="has-text-centered" style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">
+        6-camera surround view -- 5-Way Signalised Intersection Collision, vehicle v10, single frame.
+      </p>
       <p class="has-text-centered" style="margin-top: 1.5rem;">
-        In the meantime, each scenario's <strong>Interactive Viewer</strong> above shows a top-down
+        Each scenario's <strong>Interactive Viewer</strong> above shows a top-down
         trajectory map of every vehicle in the scene, with real recorded 6-camera and LiDAR data
         playable frame-by-frame for the colliding vehicles and a handful of selected surrounding vehicles.
       </p>

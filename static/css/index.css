@@ -52,6 +52,61 @@ html {
   font-weight: 500;
 }
 
+/* 6-camera surround view + center vehicle image, arranged around a cross grid */
+.surround-grid {
+  display: grid;
+  grid-template-columns: 1fr 0.6fr 1fr;
+  grid-template-rows: auto auto auto auto;
+  gap: 0.6rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.surround-cell {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.surround-cell img {
+  width: 100%;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  object-fit: cover;
+}
+
+.surround-cell figcaption {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.cell-front { grid-column: 2; grid-row: 1; }
+.cell-front-left { grid-column: 1; grid-row: 2; }
+.cell-front-right { grid-column: 3; grid-row: 2; }
+.cell-vehicle { grid-column: 2; grid-row: 2 / span 2; justify-content: center; }
+.cell-vehicle img { border: none; box-shadow: none; max-width: 70%; margin: 0 auto; }
+.cell-back-left { grid-column: 1; grid-row: 3; }
+.cell-back-right { grid-column: 3; grid-row: 3; }
+.cell-back { grid-column: 2; grid-row: 4; }
+
+@media (max-width: 640px) {
+  .surround-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+  }
+  .cell-front, .cell-front-left, .cell-front-right,
+  .cell-vehicle, .cell-back-left, .cell-back-right, .cell-back {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .cell-vehicle { order: -1; }
+  .cell-vehicle img { max-width: 40%; }
+}
+
 /* Scenario summary cards */
 .scenario-card {
   height: 100%;
