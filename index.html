@@ -55,6 +55,9 @@
   <script defer src="static/js/bulma-carousel.min.js"></script>
   <script defer src="static/js/bulma-slider.min.js"></script>
   <script defer src="static/js/index.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script defer src="static/js/sample-lidar.js"></script>
 
   <!-- Structured Data: schema.org Dataset (helps Google Dataset Search) -->
   <script type="application/ld+json">
@@ -214,11 +217,12 @@
 </section>
 <!-- End scenarios -->
 
-<!-- Sample data gallery -->
+<!-- Data format -->
 <section class="hero is-small is-light">
   <div class="hero-body">
     <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Sample Data</h2>
+      <h2 class="title is-3 has-text-centered">Data Format</h2>
+
       <div class="surround-grid">
         <figure class="surround-cell cell-front">
           <img src="static/images/sample-surround/front.jpg" alt="Front camera">
@@ -248,40 +252,21 @@
           <figcaption>Back</figcaption>
         </figure>
       </div>
-      <p class="has-text-centered" style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">
-        6-camera surround view -- 5-Way Signalised Intersection Collision, vehicle v10, single frame.
+      <p class="has-text-centered data-format-desc">
+        6&times; RGB cameras (front, front-left, front-right, back, back-left, back-right), 1600&times;900, record every 1 second
       </p>
-      <p class="has-text-centered" style="margin-top: 1.5rem;">
-        Each scenario's <strong>Interactive Viewer</strong> above shows a top-down
-        trajectory map of every vehicle in the scene, with real recorded 6-camera and LiDAR data
-        playable frame-by-frame for the colliding vehicles and a handful of selected surrounding vehicles.
-      </p>
-    </div>
-  </div>
-</section>
-<!-- End sample data gallery -->
 
-<!-- Data format -->
-<section class="hero is-small">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">Data Format</h2>
-          <div class="content has-text-justified">
-            <p>Each recording produces, for the one chosen vehicle:</p>
-            <ul>
-              <li><strong>6&times; RGB cameras</strong> (front, front-left, front-right, back, back-left, back-right), 1600&times;900, synchronized frame-by-frame</li>
-              <li><strong>1&times; top-mounted LiDAR</strong>, configurable point density and range</li>
-              <li><strong>Combined per-frame calibration</strong> (<code>.pkl</code>): the vehicle's world pose, all 6 camera intrinsics, all 6 LiDAR-to-camera extrinsics, and the LiDAR-to-vehicle mount transform -- matching the DeepAccident calibration layout</li>
-            </ul>
-            <p>
-              Full field-by-field documentation, including the exact folder layout and array shapes,
-              is in the <a href="https://github.com/ScarCrash/CARLA_Collision_Scenarios_Simulation#output-format" target="_blank">repository README</a>.
-            </p>
-          </div>
-        </div>
+      <div class="lidar-sample-wrap">
+        <canvas id="sample-lidar-canvas"></canvas>
+        <span class="lidar-sample-hint">Drag to orbit</span>
       </div>
+      <p class="has-text-centered data-format-desc">
+        360-degree view top-mounted LiDAR, record every 1 second
+      </p>
+
+      <p class="has-text-centered data-format-desc">
+        Per-frame calibration (<code>.pkl</code>): the vehicle's world pose, all 6 camera intrinsics, all 6 LiDAR-to-camera extrinsics, and the LiDAR-to-vehicle mount transform
+      </p>
     </div>
   </div>
 </section>
