@@ -55,7 +55,7 @@ html {
 /* 6-camera surround view + center vehicle image, arranged around a cross grid */
 .surround-grid {
   display: grid;
-  grid-template-columns: 1fr 0.6fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: auto auto auto auto;
   gap: 0.6rem;
   max-width: 900px;
@@ -88,7 +88,7 @@ html {
 .cell-front-left { grid-column: 1; grid-row: 2; }
 .cell-front-right { grid-column: 3; grid-row: 2; }
 .cell-vehicle { grid-column: 2; grid-row: 2 / span 2; justify-content: center; }
-.cell-vehicle img { border: none; box-shadow: none; max-width: 70%; margin: 0 auto; }
+.cell-vehicle img { width: auto; border: none; box-shadow: none; max-width: 55%; max-height: 100%; margin: 0 auto; }
 .cell-back-left { grid-column: 1; grid-row: 3; }
 .cell-back-right { grid-column: 3; grid-row: 3; }
 .cell-back { grid-column: 2; grid-row: 4; }
